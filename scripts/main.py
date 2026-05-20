@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 
 from loader import cargar_grafo
-from filter import filtrar_vertices, filtrar_kcore
+from filter import filtrar_por_grado, filtrar_por_triangulos, filtrar_kcore
 from clique_finder import buscar_cliques
 from output import guardar_resultados
 
@@ -14,19 +14,23 @@ def main():
     parser = argparse.ArgumentParser(description="Heurística para clique de mayor tamaño")
     parser.add_argument("archivo", help="Ruta al archivo .dat a procesar")
     parser.add_argument("--percentil", type=int, default=75,
-                        help="Porcentaje de vértices a conservar en el filtro inicial (default: 75)")
-    parser.add_argument("--top-k", type=int, default=5,
-                        help="Cantidad de semillas greedy (default: 5)")
+                        help="Porcentaje de vértices a conservar en el filtro por grado (default: 75)")
+    parser.add_argument("--umbral-gap", type=float, default=0.5,
+                        help="Score mínimo para aplicar el gap combinado en triángulos (default: 0.5)")
+    parser.add_argument("--top-k-pct", type=float, default=10.0,
+                        help="Porcentaje del conjunto filtrado a usar como semillas (default: 10.0)")
+    parser.add_argument("--todas-semillas", action="store_true",
+                        help="Usar todos los vértices filtrados como semilla (ignora --top-k-pct)")
     parser.add_argument("--primera", action="store_true",
                         help="Detener al encontrar la primera clique máxima")
-    parser.add_argument("--umbral-gap", type=float, default=0.5,
-                        help="Score mínimo para aplicar el gap combinado (default: 0.5)")
-    parser.add_argument("--factor-reintento", type=float, default=0.3,
-                        help="Umbral para detectar resultado sospechoso (default: 0.3)")
+    parser.add_argument("--rondas-random", type=int, default=0,
+                        help="Rondas con orden aleatorio de candidatos por semilla (default: 0)")
+    parser.add_argument("--rondas-perturbacion", type=int, default=5,
+                        help="Rondas de perturbación desde la mejor clique por semilla (default: 5)")
     parser.add_argument("--max-reintentos", type=int, default=2,
-                        help="Máximo de reintentos con k-core (default: 2)")
+                        help="Máximo de reintentos con k-core tras mejora (default: 2)")
     parser.add_argument("--output-dir", default=None,
-                        help="Directorio de salida (default: resultados/<nombre_grafo>)")
+                        help="Directorio de salida (default: resultados/<nombre_grafo>/<timestamp>)")
     args = parser.parse_args()
 
     ruta = args.archivo
@@ -46,70 +50,67 @@ def main():
     grafo, num_vertices, num_aristas = cargar_grafo(ruta)
     print(f"[carga] vértices: {num_vertices} | aristas: {num_aristas}")
 
+    # Etapa 1: filtro por grado (barato)
+    print("\n[filtrado etapa 1 — grado]")
+    por_grado = filtrar_por_grado(grafo, args.percentil)
+
+    # Etapa 2: filtro por triángulos (sobre el subconjunto reducido)
+    print("[filtrado etapa 2 — triángulos]")
+    vertices_filtrados, triangulos = filtrar_por_triangulos(grafo, por_grado, args.umbral_gap)
+
     pool_cliques = []
     mejor_tamano = 0
-    metodos_usados = []
-    ultimo_metodo = None
-    ultimo_umbral = None
-    ultimo_filtrado = None
+    metodos_usados = ["grado+triangulos"]
     intentos_realizados = 0
-    max_intentos = 1 + args.max_reintentos
 
-    for intento in range(1, max_intentos + 1):
-        print(f"\n--- intento {intento}/{max_intentos} ---")
-
-        if intento == 1:
-            vertices_filtrados, metodo, umbral = filtrar_vertices(grafo, args.percentil, args.umbral_gap)
-        else:
-            vertices_filtrados = filtrar_kcore(grafo, ultimo_filtrado, mejor_tamano)
-            metodo = f"k-core (k={mejor_tamano})"
-            umbral = mejor_tamano
-
-        metodos_usados.append(metodo)
-        ultimo_metodo = metodo
-        ultimo_umbral = umbral
-        ultimo_filtrado = vertices_filtrados
+    for intento in range(1, args.max_reintentos + 2):
+        print(f"\n--- búsqueda {intento} | vértices: {len(vertices_filtrados)}/{num_vertices} ---")
         intentos_realizados = intento
 
         if not vertices_filtrados:
-            print("[aviso] sin vértices tras filtrado, deteniendo.")
+            print("[aviso] conjunto filtrado vacío, deteniendo.")
             break
 
-        cliques_intento = buscar_cliques(grafo, vertices_filtrados, args.top_k, args.primera)
+        top_k = max(1, int(args.top_k_pct / 100 * len(vertices_filtrados)))
+        print(f"[semillas] {top_k} ({args.top_k_pct:.0f}% de {len(vertices_filtrados)})"
+              if not args.todas_semillas else f"[semillas] todas ({len(vertices_filtrados)})")
+
+        cliques_intento = buscar_cliques(
+            grafo, vertices_filtrados,
+            top_k=top_k,
+            primera=args.primera,
+            todas_semillas=args.todas_semillas,
+            rondas_random=args.rondas_random,
+            rondas_perturbacion=args.rondas_perturbacion,
+        )
 
         tamano_intento = max((len(c) for c in cliques_intento), default=0)
         pool_cliques.extend(cliques_intento)
 
-        indicador = ""
-        if tamano_intento > mejor_tamano:
-            indicador = "  ← mejoró"
-        elif intento == 1 and tamano_intento < umbral * args.factor_reintento:
-            indicador = "  ← sospechoso"
-
-        print(f"[intento {intento}/{max_intentos}] método: {metodo} | "
-              f"vértices: {len(vertices_filtrados)}/{num_vertices} | "
-              f"mejor clique: {tamano_intento}{indicador}")
-
-        tamano_anterior = mejor_tamano
-        if tamano_intento > mejor_tamano:
+        mejoro = tamano_intento > mejor_tamano
+        if mejoro:
             mejor_tamano = tamano_intento
+            print(f"[búsqueda {intento}] mejor clique: {tamano_intento}  ← mejoró")
+        else:
+            print(f"[búsqueda {intento}] mejor clique: {tamano_intento}  (sin mejora)")
 
-        if intento == max_intentos:
+        if intento > args.max_reintentos:
             break
 
-        if intento == 1:
-            sospechoso = tamano_intento < umbral * args.factor_reintento
-            if not sospechoso:
-                break
-        else:
-            sin_mejora = tamano_intento <= tamano_anterior
-            if sin_mejora:
-                break
+        if not mejoro:
+            break
 
-    # Filtrar pool: solo cliques del tamaño máximo
+        # k-core con el nuevo mejor tamaño
+        print(f"[filtrado k-core tras mejora]")
+        nuevo_filtrado = filtrar_kcore(grafo, vertices_filtrados, mejor_tamano)
+        if len(nuevo_filtrado) == len(vertices_filtrados) or not nuevo_filtrado:
+            print("[aviso] k-core no redujo el conjunto, deteniendo reintentos.")
+            break
+        vertices_filtrados = nuevo_filtrado
+        metodos_usados.append(f"k-core(k={mejor_tamano})")
+
+    # Filtrar pool y deduplicar
     cliques_finales = [c for c in pool_cliques if len(c) == mejor_tamano]
-
-    # Deduplicar
     vistas = set()
     cliques_unicas = []
     for c in cliques_finales:
@@ -120,8 +121,8 @@ def main():
 
     modo = "primera" if args.primera else "todas"
     print(f"\n[resultado] pool total: {len(pool_cliques)} cliques | "
-          f"tamaño máximo: {mejor_tamano} | intentos usados: {intentos_realizados}")
-    print(f"[resultado] clique máxima: tamaño {mejor_tamano} | cliques encontradas: {len(cliques_unicas)}")
+          f"tamaño máximo: {mejor_tamano} | búsquedas: {intentos_realizados}")
+    print(f"[resultado] clique máxima: tamaño {mejor_tamano} | cliques únicas: {len(cliques_unicas)}")
 
     tiempo = time.time() - t_inicio
 
@@ -129,9 +130,9 @@ def main():
         ruta_dat=ruta,
         num_vertices=num_vertices,
         num_aristas=num_aristas,
-        vertices_filtrados=ultimo_filtrado,
-        metodo_filtrado=ultimo_metodo,
-        umbral_grado=ultimo_umbral,
+        vertices_filtrados=vertices_filtrados,
+        metodo_filtrado="+".join(metodos_usados),
+        umbral_grado=args.percentil,
         cliques=cliques_unicas,
         tiempo=tiempo,
         output_dir=output_dir,
