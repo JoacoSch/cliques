@@ -1,0 +1,31 @@
+{
+  "grafo": "graph.200.05.dat",
+  "vertices_totales": 200,
+  "aristas_totales": 9950,
+  "vertices_filtrados": 155,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 75,
+  "percentil_usado": "grado+triangulos",
+  "tiempo_segundos": 0.07,
+  "intentos": 1,
+  "percentiles_usados": [
+    "grado+triangulos"
+  ],
+  "tamano_clique_maxima": 11,
+  "modo": "todas",
+  "cliques": [
+    [
+      17,
+      26,
+      90,
+      93,
+      101,
+      104,
+      109,
+      153,
+      171,
+      181,
+      199
+    ]
+  ]
+}

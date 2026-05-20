@@ -1,0 +1,10 @@
+Grafo: graph.900.06.dat
+Vértices totales: 900
+Aristas totales: 242730
+Vértices tras filtrado: 700  (método: grado+triangulos, umbral de grado=75)
+Tiempo de ejecución: 2.77s
+
+Tamaño de la clique máxima encontrada: 16
+
+Clique 1: [13, 18, 45, 46, 130, 141, 152, 312, 432, 473, 542, 560, 599, 669, 776, 880]
+Clique 2: [23, 47, 115, 130, 166, 261, 386, 445, 539, 608, 683, 727, 759, 818, 880, 884]

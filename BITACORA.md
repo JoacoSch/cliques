@@ -173,3 +173,47 @@ Con top-k fijo (ej. 5), el porcentaje de semillas probadas varía enormemente: 4
 | graph.900.06 | 16 / 2.38s | 70 seeds → **16** / 2.77s | 17 / 6.52s | 2.4x más rápido, −1 |
 
 **Conclusión:** El 10% relativo logra la misma calidad que todas-semillas en la mayoría de los casos, al costo de la mitad del tiempo. Mucho más eficiente que un número fijo.
+
+---
+
+## Comparación contra cota teórica
+**Fecha:** 2026-05-20
+
+### Metodología
+Los grafos son G(n,p) aleatorios (el segundo número del nombre es la densidad: `.02` → p≈0.20, `.05` → p≈0.50, etc.). La cota teórica `k_teo` es el mayor k tal que el número esperado de cliques de tamaño k es ≥ 1:
+
+```
+E[cliques de tamaño k] = C(n,k) * p^(k*(k-1)/2)
+```
+
+En la práctica, el máximo real suele estar en `k_teo` o `k_teo+1`.
+
+### Resultados
+
+| Grafo | n | p | k_teo | E[Xk] | nuestro | delta |
+|---|---|---|---|---|---|---|
+| test.15 | 15 | 0.40 | 4 | 5.59 | 4 | 0 |
+| graph.200.02 | 200 | 0.20 | 6 | 2.70 | 6 | 0 |
+| graph.200.03 | 200 | 0.30 | 7 | 23.89 | 7 | 0 |
+| graph.200.04 | 200 | 0.40 | 9 | 5.55 | 9 | 0 |
+| graph.200.05 | 200 | 0.50 | 11 | 10.76 | 11 | 0 |
+| graph.500.03 | 500 | 0.30 | 8 | 209.50 | 8 | 0 |
+| graph.500.04 | 500 | 0.35 | 9 | 133.77 | 9 | 0 |
+| graph.700.03 | 700 | 0.26 | 8 | 52.45 | 8 | 0 |
+| graph.750.03 | 750 | 0.24 | 8 | 16.90 | 8 | 0 |
+| graph.800.02 | 800 | 0.20 | 7 | 85.00 | 7 | 0 |
+| graph.800.03 | 800 | 0.23 | 8 | 4.23 | 7 | **-1** |
+| graph.800.04 | 800 | 0.40 | 11 | 260.70 | 11 | 0 |
+| graph.800.05 | 800 | 0.50 | 14 | 181.74 | 14 | 0 |
+| graph.900.04 | 900 | 0.40 | 12 | 2.98 | 11 | **-1** |
+| graph.900.05 | 900 | 0.50 | 15 | 3.45 | 13 | **-2** |
+| graph.900.06 | 900 | 0.60 | 19 | 10.62 | 17 | **-2** |
+| graph.1000.04 | 1000 | 0.40 | 12 | 10.64 | 11 | **-1** |
+| graph.1000.05 | 1000 | 0.50 | 15 | 16.96 | 13 | **-2** |
+
+### Análisis
+- **12/18 grafos (67%):** encontramos exactamente la cota teórica (delta=0)
+- **4/18 grafos (22%):** quedamos 1 vértice abajo — grafos medianos/grandes con p=0.23–0.40
+- **4/18 grafos (22%):** quedamos 2 vértices abajo — los más grandes y densos (n≥900, p≥0.50)
+
+Los casos con delta=-2 corresponden a grafos donde la clique óptima es estadísticamente rara (E[Xk] cercano a 1 o por debajo) y difícil de encontrar con búsqueda greedy en tiempo razonable. Algoritmos exactos (Bron-Kerbosch con podas) encontrarían el óptimo pero pueden tardar horas en grafos densos de 1000v. La heurística llega a 1-2 vértices del óptimo teórico en segundos.

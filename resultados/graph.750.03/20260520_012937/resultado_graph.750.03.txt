@@ -1,0 +1,12 @@
+Grafo: graph.750.03.dat
+Vértices totales: 750
+Aristas totales: 68546
+Vértices tras filtrado: 563  (método: grado+triangulos, umbral de grado=75)
+Tiempo de ejecución: 0.61s
+
+Tamaño de la clique máxima encontrada: 8
+
+Clique 1: [121, 431, 451, 457, 508, 533, 587, 644]
+Clique 2: [137, 218, 451, 485, 714, 735, 739, 744]
+Clique 3: [49, 261, 281, 360, 366, 380, 490, 744]
+Clique 4: [42, 55, 79, 115, 322, 428, 533, 636]

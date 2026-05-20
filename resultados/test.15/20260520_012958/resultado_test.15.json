@@ -1,0 +1,25 @@
+{
+  "grafo": "test.15.dat",
+  "vertices_totales": 15,
+  "aristas_totales": 42,
+  "vertices_filtrados": 10,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 75,
+  "percentil_usado": "grado+triangulos",
+  "tiempo_segundos": 0.001,
+  "intentos": 2,
+  "percentiles_usados": [
+    "grado+triangulos",
+    "k-core(k=4)"
+  ],
+  "tamano_clique_maxima": 4,
+  "modo": "todas",
+  "cliques": [
+    [
+      0,
+      6,
+      11,
+      13
+    ]
+  ]
+}

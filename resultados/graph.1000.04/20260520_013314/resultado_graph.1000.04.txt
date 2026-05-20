@@ -1,0 +1,15 @@
+Grafo: graph.1000.04.dat
+Vértices totales: 1000
+Aristas totales: 199800
+Vértices tras filtrado: 755  (método: grado+triangulos, umbral de grado=75)
+Tiempo de ejecución: 1.49s
+
+Tamaño de la clique máxima encontrada: 10
+
+Clique 1: [109, 289, 323, 352, 617, 677, 770, 813, 820, 953]
+Clique 2: [23, 384, 537, 562, 616, 620, 675, 735, 769, 770]
+Clique 3: [108, 385, 417, 473, 504, 526, 571, 788, 971, 981]
+Clique 4: [55, 169, 202, 249, 279, 363, 370, 407, 758, 845]
+Clique 5: [109, 123, 394, 427, 492, 572, 631, 832, 959, 978]
+Clique 6: [336, 364, 365, 390, 398, 495, 577, 616, 645, 769]
+Clique 7: [60, 265, 359, 397, 428, 441, 622, 832, 959, 978]

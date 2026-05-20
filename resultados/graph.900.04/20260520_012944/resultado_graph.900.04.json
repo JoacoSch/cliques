@@ -1,0 +1,44 @@
+{
+  "grafo": "graph.900.04.dat",
+  "vertices_totales": 900,
+  "aristas_totales": 161820,
+  "vertices_filtrados": 686,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 75,
+  "percentil_usado": "grado+triangulos",
+  "tiempo_segundos": 2.632,
+  "intentos": 1,
+  "percentiles_usados": [
+    "grado+triangulos"
+  ],
+  "tamano_clique_maxima": 11,
+  "modo": "todas",
+  "cliques": [
+    [
+      11,
+      89,
+      140,
+      538,
+      565,
+      587,
+      601,
+      676,
+      688,
+      743,
+      848
+    ],
+    [
+      28,
+      54,
+      188,
+      229,
+      291,
+      401,
+      568,
+      607,
+      615,
+      828,
+      874
+    ]
+  ]
+}

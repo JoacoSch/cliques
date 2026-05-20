@@ -1,0 +1,9 @@
+Grafo: test.15.dat
+Vértices totales: 15
+Aristas totales: 42
+Vértices tras filtrado: 10  (método: grado+triangulos+k-core(k=4), umbral de grado=75)
+Tiempo de ejecución: 0.00s
+
+Tamaño de la clique máxima encontrada: 4
+
+Clique 1: [0, 6, 11, 13]

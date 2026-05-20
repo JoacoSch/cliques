@@ -1,0 +1,58 @@
+{
+  "grafo": "graph.750.03.dat",
+  "vertices_totales": 750,
+  "aristas_totales": 68546,
+  "vertices_filtrados": 563,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 75,
+  "percentil_usado": "grado+triangulos",
+  "tiempo_segundos": 0.606,
+  "intentos": 1,
+  "percentiles_usados": [
+    "grado+triangulos"
+  ],
+  "tamano_clique_maxima": 8,
+  "modo": "todas",
+  "cliques": [
+    [
+      121,
+      431,
+      451,
+      457,
+      508,
+      533,
+      587,
+      644
+    ],
+    [
+      137,
+      218,
+      451,
+      485,
+      714,
+      735,
+      739,
+      744
+    ],
+    [
+      49,
+      261,
+      281,
+      360,
+      366,
+      380,
+      490,
+      744
+    ],
+    [
+      42,
+      55,
+      79,
+      115,
+      322,
+      428,
+      533,
+      636
+    ]
+  ]
+}
