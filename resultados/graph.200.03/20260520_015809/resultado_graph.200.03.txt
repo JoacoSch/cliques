@@ -1,0 +1,9 @@
+Grafo: graph.200.03.dat
+Vértices totales: 200
+Aristas totales: 5970
+Vértices tras filtrado: 156  (método: grado+triangulos, umbral de grado=75)
+Tiempo de ejecución: 0.01s
+
+Tamaño de la clique máxima encontrada: 7
+
+Clique 1: [62, 76, 127, 138, 155, 163, 196]

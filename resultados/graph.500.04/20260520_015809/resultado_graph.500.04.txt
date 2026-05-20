@@ -1,0 +1,9 @@
+Grafo: graph.500.04.dat
+Vértices totales: 500
+Aristas totales: 43219
+Vértices tras filtrado: 386  (método: grado+triangulos, umbral de grado=75)
+Tiempo de ejecución: 0.15s
+
+Tamaño de la clique máxima encontrada: 9
+
+Clique 1: [27, 72, 80, 215, 295, 375, 414, 446, 481]

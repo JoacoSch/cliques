@@ -1,0 +1,90 @@
+{
+  "grafo": "graph.800.03.dat",
+  "vertices_totales": 800,
+  "aristas_totales": 72869,
+  "vertices_filtrados": 612,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 75,
+  "percentil_usado": "grado+triangulos",
+  "tiempo_segundos": 0.266,
+  "intentos": 1,
+  "percentiles_usados": [
+    "grado+triangulos"
+  ],
+  "tamano_clique_maxima": 7,
+  "modo": "todas",
+  "cliques": [
+    [
+      43,
+      131,
+      228,
+      637,
+      697,
+      726,
+      754
+    ],
+    [
+      15,
+      97,
+      118,
+      432,
+      451,
+      650,
+      772
+    ],
+    [
+      24,
+      205,
+      326,
+      369,
+      443,
+      453,
+      510
+    ],
+    [
+      129,
+      153,
+      395,
+      506,
+      508,
+      580,
+      651
+    ],
+    [
+      186,
+      300,
+      326,
+      369,
+      378,
+      518,
+      791
+    ],
+    [
+      2,
+      177,
+      244,
+      301,
+      573,
+      600,
+      614
+    ],
+    [
+      38,
+      50,
+      360,
+      442,
+      483,
+      642,
+      792
+    ],
+    [
+      105,
+      117,
+      127,
+      352,
+      705,
+      728,
+      741
+    ]
+  ]
+}

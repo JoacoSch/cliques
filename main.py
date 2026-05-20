@@ -4,57 +4,30 @@ import sys
 import time
 from datetime import datetime
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts"))
+
 from loader import cargar_grafo
 from filter import filtrar_por_grado, filtrar_por_triangulos, filtrar_kcore
 from clique_finder import buscar_cliques
 from output import guardar_resultados
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Heurística para clique de mayor tamaño")
-    parser.add_argument("archivo", help="Ruta al archivo .dat a procesar")
-    parser.add_argument("--percentil", type=int, default=75,
-                        help="Porcentaje de vértices a conservar en el filtro por grado (default: 75)")
-    parser.add_argument("--umbral-gap", type=float, default=0.5,
-                        help="Score mínimo para aplicar el gap combinado en triángulos (default: 0.5)")
-    parser.add_argument("--top-k-pct", type=float, default=10.0,
-                        help="Porcentaje del conjunto filtrado a usar como semillas (default: 10.0)")
-    parser.add_argument("--todas-semillas", action="store_true",
-                        help="Usar todos los vértices filtrados como semilla (ignora --top-k-pct)")
-    parser.add_argument("--primera", action="store_true",
-                        help="Detener al encontrar la primera clique máxima")
-    parser.add_argument("--rondas-random", type=int, default=0,
-                        help="Rondas con orden aleatorio de candidatos por semilla (default: 0)")
-    parser.add_argument("--rondas-perturbacion", type=int, default=5,
-                        help="Rondas de perturbación desde la mejor clique por semilla (default: 5)")
-    parser.add_argument("--max-reintentos", type=int, default=2,
-                        help="Máximo de reintentos con k-core tras mejora (default: 2)")
-    parser.add_argument("--output-dir", default=None,
-                        help="Directorio de salida (default: resultados/<nombre_grafo>/<timestamp>)")
-    args = parser.parse_args()
-
-    ruta = args.archivo
-    if not os.path.isfile(ruta):
-        print(f"Error: no se encontró el archivo '{ruta}'", file=sys.stderr)
-        sys.exit(1)
-
+def procesar_grafo(ruta, args):
     nombre_base = os.path.splitext(os.path.basename(ruta))[0]
-    raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    raiz = os.path.dirname(os.path.abspath(__file__))
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = args.output_dir or os.path.join(raiz, "resultados", nombre_base, timestamp)
     os.makedirs(output_dir, exist_ok=True)
 
     t_inicio = time.time()
 
-    print(f"[carga] leyendo {ruta} ...")
+    print(f"\n[carga] leyendo {ruta} ...")
     grafo, num_vertices, num_aristas = cargar_grafo(ruta)
     print(f"[carga] vértices: {num_vertices} | aristas: {num_aristas}")
 
-    # Etapa 1: filtro por grado (barato)
     print("\n[filtrado etapa 1 — grado]")
     por_grado = filtrar_por_grado(grafo, args.percentil)
 
-    # Etapa 2: filtro por triángulos (sobre el subconjunto reducido)
     print("[filtrado etapa 2 — triángulos]")
     vertices_filtrados, triangulos = filtrar_por_triangulos(grafo, por_grado, args.umbral_gap)
 
@@ -100,7 +73,6 @@ def main():
         if not mejoro:
             break
 
-        # k-core con el nuevo mejor tamaño
         print(f"[filtrado k-core tras mejora]")
         nuevo_filtrado = filtrar_kcore(grafo, vertices_filtrados, mejor_tamano)
         if len(nuevo_filtrado) == len(vertices_filtrados) or not nuevo_filtrado:
@@ -109,7 +81,6 @@ def main():
         vertices_filtrados = nuevo_filtrado
         metodos_usados.append(f"k-core(k={mejor_tamano})")
 
-    # Filtrar pool y deduplicar
     cliques_finales = [c for c in pool_cliques if len(c) == mejor_tamano]
     vistas = set()
     cliques_unicas = []
@@ -142,6 +113,40 @@ def main():
     )
 
     print(f"[tiempo] total: {tiempo:.2f}s")
+    return mejor_tamano
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Heurística para clique de mayor tamaño")
+    parser.add_argument("archivo", nargs="?", default=None,
+                        help="Ruta al archivo .dat (si se omite, corre todos los grafos en data/)")
+    parser.add_argument("--percentil", type=int, default=75)
+    parser.add_argument("--umbral-gap", type=float, default=0.5)
+    parser.add_argument("--top-k-pct", type=float, default=10.0)
+    parser.add_argument("--todas-semillas", action="store_true")
+    parser.add_argument("--primera", action="store_true")
+    parser.add_argument("--rondas-random", type=int, default=0)
+    parser.add_argument("--rondas-perturbacion", type=int, default=5)
+    parser.add_argument("--max-reintentos", type=int, default=2)
+    parser.add_argument("--output-dir", default=None)
+    args = parser.parse_args()
+
+    raiz = os.path.dirname(os.path.abspath(__file__))
+
+    if args.archivo:
+        if not os.path.isfile(args.archivo):
+            print(f"Error: no se encontró el archivo '{args.archivo}'", file=sys.stderr)
+            sys.exit(1)
+        procesar_grafo(args.archivo, args)
+    else:
+        data_dir = os.path.join(raiz, "data")
+        archivos = sorted(f for f in os.listdir(data_dir) if f.endswith(".dat"))
+        if not archivos:
+            print(f"Error: no se encontraron archivos .dat en '{data_dir}'", file=sys.stderr)
+            sys.exit(1)
+        print(f"Corriendo {len(archivos)} grafos en {data_dir} ...\n")
+        for nombre in archivos:
+            procesar_grafo(os.path.join(data_dir, nombre), args)
 
 
 if __name__ == "__main__":

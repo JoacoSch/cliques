@@ -1,0 +1,17 @@
+Grafo: graph.200.05.dat
+Vértices totales: 200
+Aristas totales: 9950
+Vértices tras filtrado: 155  (método: grado+triangulos, umbral de grado=75)
+Tiempo de ejecución: 0.02s
+
+Tamaño de la clique máxima encontrada: 9
+
+Clique 1: [1, 8, 11, 26, 31, 56, 114, 117, 158]
+Clique 2: [1, 8, 31, 47, 56, 114, 117, 158, 169]
+Clique 3: [11, 16, 20, 68, 79, 88, 107, 109, 190]
+Clique 4: [9, 65, 101, 122, 125, 129, 136, 165, 178]
+Clique 5: [11, 20, 79, 102, 107, 109, 124, 135, 146]
+Clique 6: [9, 21, 122, 125, 129, 136, 147, 178, 183]
+Clique 7: [47, 75, 101, 124, 127, 164, 186, 189, 192]
+Clique 8: [17, 37, 101, 114, 122, 125, 127, 181, 196]
+Clique 9: [2, 38, 42, 51, 63, 75, 101, 112, 124]

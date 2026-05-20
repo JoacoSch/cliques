@@ -1,0 +1,33 @@
+{
+  "grafo": "graph.1000.05.dat",
+  "vertices_totales": 1000,
+  "aristas_totales": 249750,
+  "vertices_filtrados": 758,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 75,
+  "percentil_usado": "grado+triangulos",
+  "tiempo_segundos": 2.518,
+  "intentos": 1,
+  "percentiles_usados": [
+    "grado+triangulos"
+  ],
+  "tamano_clique_maxima": 13,
+  "modo": "todas",
+  "cliques": [
+    [
+      103,
+      198,
+      230,
+      464,
+      541,
+      562,
+      587,
+      642,
+      662,
+      723,
+      776,
+      885,
+      999
+    ]
+  ]
+}
