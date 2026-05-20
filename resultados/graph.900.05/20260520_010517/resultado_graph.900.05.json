@@ -1,0 +1,31 @@
+{
+  "grafo": "graph.900.05.dat",
+  "vertices_totales": 900,
+  "aristas_totales": 202275,
+  "vertices_filtrados": 695,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 10,
+  "percentil_usado": "fallback 75%",
+  "tiempo_segundos": 0.086,
+  "intentos": 2,
+  "percentiles_usados": [
+    "fallback 75%",
+    "k-core (k=10)"
+  ],
+  "tamano_clique_maxima": 10,
+  "modo": "primera",
+  "cliques": [
+    [
+      2,
+      16,
+      54,
+      213,
+      223,
+      639,
+      690,
+      794,
+      847,
+      881
+    ]
+  ]
+}

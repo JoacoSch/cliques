@@ -1,0 +1,9 @@
+Grafo: graph.700.03.dat
+Vértices totales: 700
+Aristas totales: 63414
+Vértices tras filtrado: 539  (método: k-core (k=5), umbral de grado=5)
+Tiempo de ejecución: 0.02s
+
+Tamaño de la clique máxima encontrada: 5
+
+Clique 1: [91, 171, 513, 597, 671]

@@ -1,0 +1,9 @@
+Grafo: graph.800.03.dat
+Vértices totales: 800
+Aristas totales: 72869
+Vértices tras filtrado: 612  (método: k-core (k=5), umbral de grado=5)
+Tiempo de ejecución: 0.03s
+
+Tamaño de la clique máxima encontrada: 5
+
+Clique 1: [270, 369, 453, 577, 645]

@@ -12,7 +12,7 @@
     "gap combinado (score=1.70, valor=0.20, freq=1.50)"
   ],
   "tamano_clique_maxima": 3,
-  "modo": "todas",
+  "modo": "primera",
   "cliques": [
     [
       0,

@@ -1,0 +1,9 @@
+Grafo: graph.1000.05.dat
+Vértices totales: 1000
+Aristas totales: 249750
+Vértices tras filtrado: 758  (método: k-core (k=11), umbral de grado=11)
+Tiempo de ejecución: 0.11s
+
+Tamaño de la clique máxima encontrada: 11
+
+Clique 1: [206, 230, 309, 394, 498, 502, 581, 617, 776, 784, 862]

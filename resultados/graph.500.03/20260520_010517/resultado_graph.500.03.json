@@ -1,27 +1,27 @@
 {
-  "grafo": "graph.200.02.dat",
-  "vertices_totales": 200,
-  "aristas_totales": 3980,
-  "vertices_filtrados": 157,
+  "grafo": "graph.500.03.dat",
+  "vertices_totales": 500,
+  "aristas_totales": 37425,
+  "vertices_filtrados": 378,
   "metodo_filtrado": "percentil",
   "umbral_grado": 6,
   "percentil_usado": "fallback 75%",
-  "tiempo_segundos": 0.002,
+  "tiempo_segundos": 0.014,
   "intentos": 2,
   "percentiles_usados": [
     "fallback 75%",
     "k-core (k=6)"
   ],
   "tamano_clique_maxima": 6,
-  "modo": "todas",
+  "modo": "primera",
   "cliques": [
     [
-      1,
-      8,
-      11,
-      15,
-      18,
-      64
+      16,
+      74,
+      260,
+      272,
+      277,
+      297
     ]
   ]
 }

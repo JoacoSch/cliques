@@ -1,0 +1,29 @@
+{
+  "grafo": "graph.500.04.dat",
+  "vertices_totales": 500,
+  "aristas_totales": 43219,
+  "vertices_filtrados": 386,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 8,
+  "percentil_usado": "fallback 75%",
+  "tiempo_segundos": 0.017,
+  "intentos": 2,
+  "percentiles_usados": [
+    "fallback 75%",
+    "k-core (k=8)"
+  ],
+  "tamano_clique_maxima": 8,
+  "modo": "primera",
+  "cliques": [
+    [
+      77,
+      129,
+      259,
+      278,
+      360,
+      400,
+      445,
+      451
+    ]
+  ]
+}

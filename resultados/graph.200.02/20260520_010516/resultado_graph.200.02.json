@@ -4,24 +4,22 @@
   "aristas_totales": 3980,
   "vertices_filtrados": 157,
   "metodo_filtrado": "percentil",
-  "umbral_grado": 6,
+  "umbral_grado": 4,
   "percentil_usado": "fallback 75%",
   "tiempo_segundos": 0.002,
   "intentos": 2,
   "percentiles_usados": [
     "fallback 75%",
-    "k-core (k=6)"
+    "k-core (k=4)"
   ],
-  "tamano_clique_maxima": 6,
-  "modo": "todas",
+  "tamano_clique_maxima": 4,
+  "modo": "primera",
   "cliques": [
     [
-      1,
-      8,
-      11,
-      15,
-      18,
-      64
+      44,
+      45,
+      103,
+      186
     ]
   ]
 }

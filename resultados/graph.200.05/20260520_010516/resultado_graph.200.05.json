@@ -1,0 +1,30 @@
+{
+  "grafo": "graph.200.05.dat",
+  "vertices_totales": 200,
+  "aristas_totales": 9950,
+  "vertices_filtrados": 155,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 9,
+  "percentil_usado": "fallback 75%",
+  "tiempo_segundos": 0.004,
+  "intentos": 2,
+  "percentiles_usados": [
+    "fallback 75%",
+    "k-core (k=9)"
+  ],
+  "tamano_clique_maxima": 9,
+  "modo": "primera",
+  "cliques": [
+    [
+      1,
+      8,
+      11,
+      26,
+      31,
+      56,
+      114,
+      117,
+      158
+    ]
+  ]
+}

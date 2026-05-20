@@ -1,0 +1,26 @@
+{
+  "grafo": "graph.800.02.dat",
+  "vertices_totales": 800,
+  "aristas_totales": 63920,
+  "vertices_filtrados": 629,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 5,
+  "percentil_usado": "fallback 75%",
+  "tiempo_segundos": 0.025,
+  "intentos": 2,
+  "percentiles_usados": [
+    "fallback 75%",
+    "k-core (k=5)"
+  ],
+  "tamano_clique_maxima": 5,
+  "modo": "primera",
+  "cliques": [
+    [
+      10,
+      228,
+      353,
+      434,
+      453
+    ]
+  ]
+}

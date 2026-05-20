@@ -2,9 +2,10 @@ import argparse
 import os
 import sys
 import time
+from datetime import datetime
 
 from loader import cargar_grafo
-from filter import filtrar_vertices
+from filter import filtrar_vertices, filtrar_kcore
 from clique_finder import buscar_cliques
 from output import guardar_resultados
 
@@ -12,18 +13,20 @@ from output import guardar_resultados
 def main():
     parser = argparse.ArgumentParser(description="Heurística para clique de mayor tamaño")
     parser.add_argument("archivo", help="Ruta al archivo .dat a procesar")
-    parser.add_argument("--percentil", type=int, default=85,
-                        help="Percentil inicial de corte (default: 85)")
+    parser.add_argument("--percentil", type=int, default=75,
+                        help="Porcentaje de vértices a conservar en el filtro inicial (default: 75)")
     parser.add_argument("--top-k", type=int, default=5,
                         help="Cantidad de semillas greedy (default: 5)")
     parser.add_argument("--primera", action="store_true",
                         help="Detener al encontrar la primera clique máxima")
+    parser.add_argument("--umbral-gap", type=float, default=0.5,
+                        help="Score mínimo para aplicar el gap combinado (default: 0.5)")
     parser.add_argument("--factor-reintento", type=float, default=0.3,
                         help="Umbral para detectar resultado sospechoso (default: 0.3)")
     parser.add_argument("--max-reintentos", type=int, default=2,
-                        help="Máximo de reintentos bajando el umbral (default: 2)")
+                        help="Máximo de reintentos con k-core (default: 2)")
     parser.add_argument("--output-dir", default=None,
-                        help="Directorio de salida (default: directorio del .dat)")
+                        help="Directorio de salida (default: resultados/<nombre_grafo>)")
     args = parser.parse_args()
 
     ruta = args.archivo
@@ -33,7 +36,8 @@ def main():
 
     nombre_base = os.path.splitext(os.path.basename(ruta))[0]
     raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    output_dir = args.output_dir or os.path.join(raiz, "resultados", nombre_base)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = args.output_dir or os.path.join(raiz, "resultados", nombre_base, timestamp)
     os.makedirs(output_dir, exist_ok=True)
 
     t_inicio = time.time()
@@ -44,8 +48,7 @@ def main():
 
     pool_cliques = []
     mejor_tamano = 0
-    percentil_actual = args.percentil
-    percentiles_usados = []
+    metodos_usados = []
     ultimo_metodo = None
     ultimo_umbral = None
     ultimo_filtrado = None
@@ -54,8 +57,15 @@ def main():
 
     for intento in range(1, max_intentos + 1):
         print(f"\n--- intento {intento}/{max_intentos} ---")
-        vertices_filtrados, metodo, umbral = filtrar_vertices(grafo, percentil_actual)
-        percentiles_usados.append(percentil_actual)
+
+        if intento == 1:
+            vertices_filtrados, metodo, umbral = filtrar_vertices(grafo, args.percentil, args.umbral_gap)
+        else:
+            vertices_filtrados = filtrar_kcore(grafo, ultimo_filtrado, mejor_tamano)
+            metodo = f"k-core (k={mejor_tamano})"
+            umbral = mejor_tamano
+
+        metodos_usados.append(metodo)
         ultimo_metodo = metodo
         ultimo_umbral = umbral
         ultimo_filtrado = vertices_filtrados
@@ -73,11 +83,11 @@ def main():
         indicador = ""
         if tamano_intento > mejor_tamano:
             indicador = "  ← mejoró"
-        elif tamano_intento < umbral * args.factor_reintento:
+        elif intento == 1 and tamano_intento < umbral * args.factor_reintento:
             indicador = "  ← sospechoso"
 
-        print(f"[intento {intento}/{max_intentos}] umbral=percentil {percentil_actual} → "
-              f"grado>={umbral} | vértices: {len(vertices_filtrados)}/{num_vertices} | "
+        print(f"[intento {intento}/{max_intentos}] método: {metodo} | "
+              f"vértices: {len(vertices_filtrados)}/{num_vertices} | "
               f"mejor clique: {tamano_intento}{indicador}")
 
         tamano_anterior = mejor_tamano
@@ -87,15 +97,14 @@ def main():
         if intento == max_intentos:
             break
 
-        # Criterio A: resultado sospechoso
-        sospechoso = tamano_intento < umbral * args.factor_reintento
-        # Criterio B: sin mejora respecto al intento anterior
-        sin_mejora = (intento > 1) and (tamano_intento <= tamano_anterior)
-
-        if not sospechoso or sin_mejora:
-            break
-
-        percentil_actual = max(0, percentil_actual - 10)
+        if intento == 1:
+            sospechoso = tamano_intento < umbral * args.factor_reintento
+            if not sospechoso:
+                break
+        else:
+            sin_mejora = tamano_intento <= tamano_anterior
+            if sin_mejora:
+                break
 
     # Filtrar pool: solo cliques del tamaño máximo
     cliques_finales = [c for c in pool_cliques if len(c) == mejor_tamano]
@@ -128,7 +137,7 @@ def main():
         output_dir=output_dir,
         modo=modo,
         intentos=intentos_realizados,
-        percentiles_usados=percentiles_usados,
+        percentiles_usados=metodos_usados,
     )
 
     print(f"[tiempo] total: {tiempo:.2f}s")

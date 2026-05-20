@@ -1,0 +1,26 @@
+{
+  "grafo": "graph.700.03.dat",
+  "vertices_totales": 700,
+  "aristas_totales": 63414,
+  "vertices_filtrados": 539,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 5,
+  "percentil_usado": "fallback 75%",
+  "tiempo_segundos": 0.025,
+  "intentos": 2,
+  "percentiles_usados": [
+    "fallback 75%",
+    "k-core (k=5)"
+  ],
+  "tamano_clique_maxima": 5,
+  "modo": "primera",
+  "cliques": [
+    [
+      91,
+      171,
+      513,
+      597,
+      671
+    ]
+  ]
+}

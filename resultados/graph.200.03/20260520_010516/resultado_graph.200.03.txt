@@ -1,0 +1,9 @@
+Grafo: graph.200.03.dat
+Vértices totales: 200
+Aristas totales: 5970
+Vértices tras filtrado: 156  (método: k-core (k=6), umbral de grado=6)
+Tiempo de ejecución: 0.00s
+
+Tamaño de la clique máxima encontrada: 6
+
+Clique 1: [44, 45, 103, 155, 171, 186]
