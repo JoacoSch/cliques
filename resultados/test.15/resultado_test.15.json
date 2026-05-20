@@ -1,0 +1,23 @@
+{
+  "grafo": "test.15.dat",
+  "vertices_totales": 15,
+  "aristas_totales": 42,
+  "vertices_filtrados": 4,
+  "metodo_filtrado": "gap_automatico",
+  "umbral_grado": 7,
+  "percentil_usado": null,
+  "tiempo_segundos": 0.0,
+  "intentos": 1,
+  "percentiles_usados": [
+    85
+  ],
+  "tamano_clique_maxima": 3,
+  "modo": "todas",
+  "cliques": [
+    [
+      0,
+      8,
+      12
+    ]
+  ]
+}

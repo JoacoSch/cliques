@@ -1,0 +1,9 @@
+Grafo: test.15.dat
+Vértices totales: 15
+Aristas totales: 42
+Vértices tras filtrado: 4  (método: gap automático, umbral de grado=7)
+Tiempo de ejecución: 0.00s
+
+Tamaño de la clique máxima encontrada: 3
+
+Clique 1: [0, 8, 12]

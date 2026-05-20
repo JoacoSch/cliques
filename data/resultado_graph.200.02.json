@@ -1,0 +1,26 @@
+{
+  "grafo": "graph.200.02.dat",
+  "vertices_totales": 200,
+  "aristas_totales": 3980,
+  "vertices_filtrados": 57,
+  "metodo_filtrado": "percentil",
+  "umbral_grado": 43,
+  "percentil_usado": 85,
+  "tiempo_segundos": 0.002,
+  "intentos": 2,
+  "percentiles_usados": [
+    85,
+    75
+  ],
+  "tamano_clique_maxima": 5,
+  "modo": "todas",
+  "cliques": [
+    [
+      1,
+      11,
+      58,
+      186,
+      193
+    ]
+  ]
+}
