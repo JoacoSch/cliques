@@ -45,5 +45,34 @@ def guardar_resultados(ruta_dat, num_vertices, num_aristas, vertices_filtrados,
     with open(ruta_json, "w") as f:
         json.dump(datos, f, indent=2)
 
+    _actualizar_resumen(output_dir, nombre_grafo, tamano_max)
+
     print(f"[output] guardado en: {ruta_txt} / {ruta_json}")
     return ruta_txt, ruta_json
+
+
+def _actualizar_resumen(output_dir, nombre_grafo, tamano_max):
+    # Subir dos niveles: output_dir es resultados/<grafo>/<timestamp>/
+    raiz_resultados = os.path.dirname(os.path.dirname(output_dir))
+    ruta_resumen = os.path.join(raiz_resultados, "resumen.txt")
+
+    entradas = {}
+    if os.path.isfile(ruta_resumen):
+        with open(ruta_resumen, "r") as f:
+            for linea in f:
+                linea = linea.strip()
+                if " -> " in linea:
+                    grafo, val = linea.split(" -> ", 1)
+                    try:
+                        entradas[grafo.strip()] = int(val.strip())
+                    except ValueError:
+                        pass
+
+    anterior = entradas.get(nombre_grafo, 0)
+    entradas[nombre_grafo] = max(anterior, tamano_max)
+
+    with open(ruta_resumen, "w") as f:
+        for grafo in sorted(entradas):
+            f.write(f"{grafo} -> {entradas[grafo]}\n")
+
+    print(f"[output] resumen actualizado: {ruta_resumen}")
